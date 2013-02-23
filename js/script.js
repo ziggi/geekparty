@@ -177,6 +177,8 @@ $(document).ready(function () {
 			{
 
 				gamestate = 2;//stand
+				changeLevel();
+
 				if (
 						new_y > top_offset - rectangle_height/2  - player_height/2 - old_speed
 					&&
@@ -215,6 +217,7 @@ $(document).ready(function () {
 			else
 			{
 				gamestate = 1;//fly
+				levelMoving = 0;
 			}
 
 			var width = player.get('width')/2;
