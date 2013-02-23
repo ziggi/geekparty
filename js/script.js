@@ -137,19 +137,27 @@ $(document).ready(function () {
 			{
 				new_x = x;
 			}
+
+			var left_offset = rectangle.get('left');
+			var top_offset = rectangle.get('top');
+			var rectangle_width = rectangle.get('width');
+			var rectangle_height = rectangle.get('height');
+			var player_width = player.get('width');
+			var player_height= player.get('height');
+
 			if (
-					new_x > rectangle.get('left') - rectangle.get('width')/2 - player.get('width')/2
+					new_x > left_offset - rectangle_width/2 - player_width/2
 				&&
-					new_x < rectangle.get('left') + rectangle.get('width')/2 + player.get('width')/2
+					new_x < left_offset + rectangle_width/2 + player_width/2
 				&&
-					new_y > rectangle.get('top') - rectangle.get('height')/2  - player.get('height')/2
+					new_y > top_offset - rectangle_height/2  - player_height/2
 				&&
-					new_y < rectangle.get('top') + rectangle.get('height')/2 +  player.get('height')/2
+					new_y < top_offset + rectangle_height/2 +  player_height/2
 				&&
 					!(
-							new_x > rectangle.get('left') - rectangle.get('width')/2 + rectangle.get('width')/3 + player.get('width')/2
+							new_x > left_offset - rectangle_width/2 + rectangle_width/3 + player_width/2
 						&&
-							new_x < rectangle.get('left') - rectangle.get('width')/2 + 2*rectangle.get('width')/3 + player.get('width')/2
+							new_x < left_offset - rectangle_width/2 + 2*rectangle_width/3 + player_width/2
 					)
 				)
 			{
