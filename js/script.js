@@ -1,6 +1,6 @@
 $(document).ready(function () {
 	var interval_1;
-	
+
 	canvas = new fabric.Canvas('canvas');
 
 	console.log( canvas );
@@ -24,8 +24,14 @@ $(document).ready(function () {
 
 	});
 
+	var img = new Image();
+	img.src = "res/character.png";
 
-	player = new fabric.Rect(
+	player = new fabric.Image(img, {
+			left: 260,
+			top: 500
+	});
+	/*new fabric.Rect(
 		{
 			left: canvas.getWidth()/2,
 			top: canvas.getHeight() - 40 - 10,
@@ -33,7 +39,7 @@ $(document).ready(function () {
 			width: 10,
 			height: 40
 		}
-	);
+	);*/
 	canvas.add( player );
 
 	interval_1 = setInterval( processTick, 1000 / 60 );
