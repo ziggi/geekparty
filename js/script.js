@@ -175,11 +175,13 @@ $(document).ready(function () {
 			{
 
 				gamestate = 2;//stand
-				interval_level = setInterval( changeLevel, 1000 / 60 );
+				changeLevel();
+
 			}
 			else
 			{
 				gamestate = 1;//fly
+				levelMoving = 0;
 			}
 
 			var width = player.get('width')/2;

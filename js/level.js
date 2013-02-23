@@ -9,12 +9,14 @@ img.onerror = function () {
 var panel = [153, 53];
 var charParam = [10, 40];
 var platformWidth = 47;
-var valueChanging = 0;
+var levelMoving = 0;
+var maxY_ID = 0;
+var interval_level;
 
 var level_objs = [
 	[200, 564, 0],
-	[200, 464, 0],
 	[264, 164, 0],
+	[200, 464, 0],
 	[564, 264, 0]
 ];
 
@@ -40,21 +42,57 @@ img.onload = function () {
 
 }
 
-changeLevel = function () {
-
+changingLevel = function () {
+	if (levelMoving != 1) {
+		return;
+	}
 	for (var i = 0; i < level_objs.length; i++) {
 
-		var value = level_objs[0][1] - level_objs[i][1] + panel[1];
+		level_objs[i][4] -= 2;
 
-		if (level_objs[i][1] < value) {
+		if (level_objs[i][4] <= 0 && i != maxY_ID) {
+			clearInterval(interval_level);
 			
+			canvas.remove(level_objs[maxY_ID][3]);
+			//delete(level_objs[maxY_ID][3]);
+			level_objs.splice(maxY_ID, 1);
+
+			continue;
 		}
+
 		level_objs[i][1] += 2;
 
 		level_objs[i][3].set({
 			top: level_objs[i][1]
 		});
 
+
+	}
+
+}
+
+changeLevel = function () {
+	if (levelMoving != 1) {
+
+		levelMoving = 1;
+
+		for (var i = 0; i < level_objs.length - 1; i++) {
+			if (level_objs[i][1] > level_objs[maxY_ID][1]) {
+				maxY_ID = i;
+			}
+		}
+
+
+		for (var i = 0; i < level_objs.length; i++) {
+
+			level_objs[i][4] = level_objs[maxY_ID][1] - level_objs[i][1];
+
+		}
+		level_objs[maxY_ID][4] = panel[1] + level_objs[maxY_ID][2] / 2;
+
+		console.log(maxY_ID + ' ' + level_objs.length);
+
+		interval_level = setInterval( changingLevel, 1000 / 60 );
 	}
 
 }
