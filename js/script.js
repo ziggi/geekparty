@@ -2,21 +2,27 @@ $(document).ready(function () {
 	var interval_1;
 	var player;
 	var timeoutId;
-	var keystate = [false, false];
+	var keystate = [false, false, false]; // left, right, mouse
 	const keyLeft = 37;
 	const keyRight = 39;
-
+	var jCanvas = $('canvas');
 	canvas = new fabric.Canvas('canvas');
 
-	$('canvas').on('click', function()
+	console.log(jCanvas);
+	jCanvas.mousedown(function()
 	{
-		if ( player )
-		{
-			var x = player.get('left');
-			var y = player.get('top');
-
-			player.animate({left:x, top: y - 240 });
-		}
+		keystate[2] = true;
+//		if ( player )
+//		{
+//			var x = player.get('left');
+//			var y = player.get('top');
+//
+//			player.animate({left:x, top: y - 240 });
+//		}
+	});
+	jCanvas.mouseup( function()
+	{
+		keystate[2] = false;
 	});
 	//console.log( canvas );
 
@@ -115,7 +121,16 @@ $(document).ready(function () {
 			var x = player.get('left');
 			var new_x;
 			var y = player.get('top');
-			var new_y = y - 1;
+			var new_y;
+
+			if ( keystate[2] == true )
+			{
+				new_y = y - 1;
+			}
+			else
+			{
+				new_y = y;
+			}
 
 			if ( keystate[0] == true && keystate[1] == false )
 			{
@@ -129,6 +144,7 @@ $(document).ready(function () {
 			{
 				new_x = x;
 			}
+
 
 			player.set({left: new_x, top: new_y}).setCoords();
 		}
