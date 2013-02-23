@@ -115,7 +115,7 @@ $(document).ready(function () {
 			var x = player.get('left');
 			var new_x;
 			var y = player.get('top');
-			var new_y = y - 4;
+			var new_y = y - 1;
 
 			if ( keystate[0] == true && keystate[1] == false )
 			{
@@ -125,8 +125,12 @@ $(document).ready(function () {
 			{
 				new_x =  x + 2;
 			}
+			else
+			{
+				new_x = x;
+			}
 
-			player.animate({left: new_x, top: new_y});
+			player.set({left: new_x, top: new_y}).setCoords();
 		}
 		canvas.renderAll();
 	}
