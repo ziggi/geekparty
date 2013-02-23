@@ -165,11 +165,14 @@ $(document).ready(function () {
 			{
 
 				gamestate = 2;//stand
-				if ( new_y > top_offset - rectangle_height/2  - player_height/2 - old_speed
+				if (
+						new_y > top_offset - rectangle_height/2  - player_height/2 - old_speed
 					&&
-					new_y < top_offset + rectangle_height/2  - player_height/2 + old_speed )
+						new_y < top_offset + rectangle_height/2  - player_height/2 + old_speed
+				)
 				{
 					new_y = top_offset - rectangle_height/2  - player_height/2;
+					speed = old_speed;
 				}
 			}
 			else
