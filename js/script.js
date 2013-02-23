@@ -1,27 +1,90 @@
 $(document).ready(function () {
 	var interval_1;
+	var player;
+	var timeoutId;
+	var keystate = [false, false];
+	const keyLeft = 37;
+	const keyRight = 39;
 
-	var canvas = new fabric.Canvas('canvas');
+	canvas = new fabric.Canvas('canvas');
 
-	console.log( canvas );
-	$('#right').mousedown(function () {
+	$('canvas').on('click', function()
+	{
+		if ( player )
+		{
+			var x = player.get('left');
+			var y = player.get('top');
+
+			player.animate({left:x, top: y - 240 });
+		}
+	});
+	//console.log( canvas );
+
+	function move( direction, first )
+	{
+		var x = player.get('left');
+		if (direction == undefined || direction == 'right') {
+			direction = x + 20;
+		}
+		else {
+			direction =  x - 20;
+		}
+		console.log( direction );
+		player.set(
+			'left',
+			x).setCoords();
+
+		player.animate(
+			'left',
+			direction,
+			{
+				duration: 1000/60
+			}).setCoords();
+	}
+
+	$('#right').mousedown(function ()
+	{
+		move('right');
+		timeoutId = setInterval( function () {
+			move('right')
+		}, 100);
 	}).bind('mouseup mouseleave', function () {
+			clearInterval( timeoutId );
 		});
-	$('#left').mousedown(function () {
-
+	$('#left').mousedown(function ()
+	{
+		move('left');
+		timeoutId = setInterval( function () {
+			move('left')
+		}, 100);
 	}).bind('mouseup mouseleave', function () {
-
+			clearInterval( timeoutId );
 		});
+
 	$(document).keydown(function (event) {
 		if (event.keyCode === 39) {//right
-
+			//$('#right').trigger( 'click' );
+//			move('right');
+//			timeoutId = setInterval( function () {
+//				move('right')
+//			}, 1000/60);
+			keystate[1] = true;
 		}
 		else if (event.keyCode === 37) {//left
-
+			//$('#left').trigger( 'click' );
+			keystate[0] = true;
 		}
 	});
 	$(document).keyup(function (event) {
-
+		if (event.keyCode === 39) { // right
+			keystate[1] = false;
+		}
+		else if (event.keyCode === 37) {//left
+			keystate[0] = false;
+		}
+		if (timeoutId > 0) {
+			clearInterval(timeoutId);
+		}
 	});
 
 
@@ -46,6 +109,25 @@ $(document).ready(function () {
 	}
 	function processTick()
 	{
+		//console.log( keystate );
+		if ( player )
+		{
+			var x = player.get('left');
+			var new_x;
+			var y = player.get('top');
+			var new_y = y - 4;
+
+			if ( keystate[0] == true && keystate[1] == false )
+			{
+				new_x =  x - 2;
+			}
+			else if ( keystate[1] == true && keystate[0] == false )
+			{
+				new_x =  x + 2;
+			}
+
+			player.animate({left: new_x, top: new_y});
+		}
 		canvas.renderAll();
 	}
 });
