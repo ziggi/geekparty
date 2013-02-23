@@ -10,15 +10,15 @@ img.onerror = function () {
 var panel = [153, 53];
 var charParam = [10, 40];
 var platformWidth = 47;
-var levelMoving = 0;
+//var levelMoving = 0;
 var maxY_ID = 0;
 var interval_level;
 
-var level_objs = [
+level_objs = [
 	[200, 564, 0],
-	[264, 164, 0],
-	[200, 464, 0],
-	[564, 264, 0]
+	[270, 464, 0],
+	[564, 264, 0],
+	[264, 164, 0]
 ];
 
 img.onload = function () {
@@ -39,6 +39,16 @@ img.onload = function () {
 		});
 
 		canvas.add(level_objs[i][3]);
+		if ( i == 0 )
+		{
+			player.set(
+				{
+					left: level_objs[i][0] - level_objs[i][3].get('width')/2 + level_objs[i][3].get('width')/6 - player.get('width')/2,
+					top: level_objs[i][1] - level_objs[i][3].get('height')/2 - player.get('height')/2
+				}
+			).setCoords();
+			currentPlayerDock = i;
+		}
 	}
 
 }
@@ -56,7 +66,7 @@ changingLevel = function () {
 
 			canvas.remove(level_objs[maxY_ID][3]);
 			//delete(level_objs[maxY_ID][3]);
-			level_objs.splice(maxY_ID, 1);
+			//level_objs.splice(maxY_ID, 1);
 
 			continue;
 		}

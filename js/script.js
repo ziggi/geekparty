@@ -1,7 +1,7 @@
 $(document).ready(function () {
 	var interval_1;
-	var player;
 	var startButton;
+	var lockplayer;
 	var bear;
 	var bearInterval;
 	var timeoutId;
@@ -19,8 +19,10 @@ $(document).ready(function () {
 	prepareResourses();
 
 	$('canvas').click( startGame );
+	$(document).click( function(){ gamestate = 1; lockplayer = false;});
 	$(document).mousedown(function()
 	{
+
 		//startGame();
 		keystate[2] = true;
 	});
@@ -54,6 +56,7 @@ $(document).ready(function () {
 		if ( !interval_1 && gamestate == 0 )
 		{
 			//prepareResourses();
+			gamestate = 2;
 			interval_1 = setInterval( processTick, 1000 / 60 );
 		}
 	}
@@ -104,14 +107,18 @@ $(document).ready(function () {
 
 	function gameOver()
 	{
-		var text = new fabric.Text('Game Over\nGained score: ' + score, { left: canvas.getWidth()/2, top: canvas.getHeight()/2});
+		var text = new fabric.Text('Game Over\nGained score: ' + currentPlayerDock, { left: canvas.getWidth()/2, top: canvas.getHeight()/2});
 		canvas.add(text);
 		clearInterval( interval_1 );
 		gamestate = 99;
 	}
 	function processTick()
 	{
-		canvas.remove( startButton );
+		if ( startButton )
+		{
+			canvas.remove( startButton );
+			delete ( startButton );
+		}
 		//console.log( keystate );
 		if ( player )
 		{
@@ -124,9 +131,14 @@ $(document).ready(function () {
 //			if ( keystate[2] == true )
 			if ( gamestate == 1 ) // fly
 			{
-				if ( y < 300 )
+				//console.log( speed );
+				if ( currentPlayerDock == 0 && y > 400  )
 				{
-					speed +=  ( points_per_frame / movements[0] );
+					speed -= ( points_per_frame / movements[1] );
+				}
+				else if ( currentPlayerDock > 0 && y > level_objs[currentPlayerDock][3].get('top') - 400 )
+				{
+					speed -=  ( points_per_frame / movements[1] );
 				}
 				else
 				{
@@ -151,97 +163,125 @@ $(document).ready(function () {
 			{
 				new_x = x;
 			}
+			if ( gamestate == 1 )
+			{
+				for( var i = 0; i < level_objs.length; i++ )
+				{
+					if ( i  == currentPlayerDock ) continue;
+					//console.log( level_objs[i] );
+					left_offset = level_objs[i][3].get('left');
+					top_offset = level_objs[i][3].get('top');
+					rectangle_width = level_objs[i][3].get('width');
+					rectangle_height = level_objs[i][3].get('height');
+					player_width = player.get('width');
+					player_height = player.get('height');
 
-			var left_offset = rectangle.get('left');
-			var top_offset = rectangle.get('top');
-			var rectangle_width = rectangle.get('width');
-			var rectangle_height = rectangle.get('height');
-			var player_width = player.get('width');
-			var player_height = player.get('height');
-
-			if (
-					new_x > left_offset - rectangle_width/2 - player_width/2
-				&&
-					new_x < left_offset + rectangle_width/2 + player_width/2
-				&&
-					new_y > top_offset - rectangle_height/2  - player_height/2 - old_speed
-				&&
-					new_y < top_offset + rectangle_height/2  - player_height/2 + old_speed
-				&&
-					!(
-							new_x > left_offset - rectangle_width/2 + rectangle_width/3 + player_width/2
+					if (	gamestate == 1 &&
+							new_x > left_offset - rectangle_width/2 - player_width/2
 						&&
-							new_x < left_offset - rectangle_width/2 + 2*rectangle_width/3 + player_width/2
-					)
-				)
-			{
-
-				gamestate = 2;//stand
-				changeLevel();
-
-				if (
-						new_y > top_offset - rectangle_height/2  - player_height/2 - old_speed
-					&&
-						new_y < top_offset + rectangle_height/2  - player_height/2 + old_speed
-				)
-				{
-					new_y = top_offset - rectangle_height/2  - player_height/2;
-					speed = old_speed;
-				}
-				if (
-						new_x > left_offset - rectangle_width/2 + 2 * rectangle_width/3 - player_width/2
-					&&
-						new_x < left_offset + rectangle_width/2 - player_width/2
-				)
-				{
-					if ( !bearInterval )
+							new_x < left_offset + rectangle_width/2 + player_width/2
+						&&
+							new_y > top_offset - rectangle_height/2  - player_height/2 - old_speed
+						&&
+							new_y < top_offset + rectangle_height/2  - player_height/2 + old_speed
+						&&
+							!(
+									new_x > left_offset - rectangle_width/2 + rectangle_width/3 + player_width/2
+								&&
+									new_x < left_offset - rectangle_width/2 + 2*rectangle_width/3 + player_width/2
+							)
+						)
 					{
-						bearInterval = setInterval( function(){ moveBear( left_offset - rectangle_width/2 + rectangle_width/6, top_offset - rectangle_height/2 ); }, 1000/60 );
-					}
 
-				}
-				else if (
-						new_x > left_offset - rectangle_width/2 + player_width/2
-					&&
-						new_x < left_offset - rectangle_width/2 + rectangle_width/3 + player_width/2
-				)
-				{
-					if ( !bearInterval )
+						gamestate = 2;//stand
+						currentPlayerDock = i;
+						//console.log( i );
+
+
+						if (
+								new_y > top_offset - rectangle_height/2  - player_height/2 - old_speed
+							&&
+								new_y < top_offset + rectangle_height/2  - player_height/2 + old_speed
+						)
+						{
+							new_y = top_offset - rectangle_height/2  - player_height/2;
+							speed = old_speed;
+							lockplayer = true;
+						}
+
+						if (
+								x > left_offset - rectangle_width/2 + 2 * rectangle_width/3 - player_width/2
+							&&
+								x < left_offset + rectangle_width/2 - player_width/2
+						)
+						{
+							prepareBear( left_offset - rectangle_width/2 + rectangle_width/6, top_offset - rectangle_height/2 );
+
+						}
+						else if (
+								x > left_offset - rectangle_width/2 + player_width/2
+							&&
+								x < left_offset - rectangle_width/2 + rectangle_width/3 + player_width/2
+						)
+						{
+							prepareBear( left_offset - rectangle_width/2 +  5 * rectangle_width/6, top_offset - rectangle_height/2 );
+
+						}
+
+						break;
+					}
+					else
 					{
-						bearInterval = setInterval( function(){ moveBear( left_offset - rectangle_width/2 +  5 * rectangle_width/6, top_offset - rectangle_height/2 ); }, 1000/60 );
+						new_y = y - speed;
+						//gamestate = 1;//fly
+
 					}
-
 				}
-				interval_level = setInterval( changeLevel, 1000 / 60 );
-			}
-			else
-			{
-				gamestate = 1;//fly
-				levelMoving = 0;
+				if ( new_y < canvas.getHeight()/2 )
+				{
+					changeLevel();
+				}
+				if ( new_y > canvas.getHeight() - 200 )
+				{
+					levelMoving = 0;
+				}
+
+				var width = player.get('width')/2;
+
+				if ( new_x - width < 0 )
+				{
+					new_x = 0 + width;
+				}
+				else if ( new_x + width > canvas.getWidth() )
+				{
+					new_x = canvas.getWidth() - width;
+				}
+
+				if ( y - player.get('height')/2 > canvas.getHeight() )
+				{
+					gameOver();
+				}
 			}
 
-			var width = player.get('width')/2;
 
-			if ( new_x - width < 0 )
+			if ( !lockplayer )
 			{
-				new_x = 0 + width;
+				player.set({left: new_x, top: new_y}).setCoords();
 			}
-			else if ( new_x + width > canvas.getWidth() )
-			{
-				new_x = canvas.getWidth() - width;
-			}
-
-			if ( y - player.get('height')/2 > canvas.getHeight() )
-			{
-				gameOver();
-			}
-
-			player.set({left: new_x, top: new_y}).setCoords();
 		}
 		canvas.renderAll();
 	}
 
-	function moveBear( x, y )
+	function prepareBear( ttx, tty)
+	{
+		tx = ttx;
+		ty = tty;
+		if ( !bearInterval )
+		{
+			bearInterval = setInterval(  moveBear, 1000/60 );
+		}
+	}
+	function moveBear(  )
 	{
 		if ( bear )
 		{
@@ -250,17 +290,25 @@ $(document).ready(function () {
 			var bear_y = bear.get('top');
 			var new_y;
 
-			if ( bear_y + points_per_frame > y )
+			if ( bear_y + points_per_frame > ty )
 			{
-				new_y = y;
+				new_y = ty;
+				gamestate = 1;
+				lockplayer = false;
+				speed = 3;
+				ty = -100;
+				tx = 47;
+				bear.set({left: 47, top: -100}).setCoords();
 				clearInterval( bearInterval );
+				bearInterval = false;
+				return;
 			}
 			else
 			{
 				new_y = bear_y + 6;
 			}
 
-			new_x = x;
+			new_x = tx;
 			bear.set({left: new_x, top: new_y}).setCoords();
 
 		}
