@@ -2,6 +2,8 @@ $(document).ready(function () {
 	var interval_1;
 	var player;
 	var startButton;
+	var bear;
+	var bearInterval;
 	var timeoutId;
 	var gamestate = 0;
 	var keystate = [false, false, false]; // left, right, mouse
@@ -68,6 +70,17 @@ $(document).ready(function () {
 		);
 		canvas.add( player );
 
+		bear = new fabric.Rect(
+			{
+				left: 47,
+				top: -100,
+				fill: 'orange',
+				width: 153,
+				height: 53
+			}
+		);
+		canvas.add( bear );
+
 		rectangle = new fabric.Rect(
 			{
 				left: canvas.getWidth()/4,
@@ -126,7 +139,6 @@ $(document).ready(function () {
 				new_y = y;
 			}
 
-
 			if ( keystate[0] == true && keystate[1] == false )
 			{
 				new_x =  x - points_per_frame/2;
@@ -174,12 +186,36 @@ $(document).ready(function () {
 					new_y = top_offset - rectangle_height/2  - player_height/2;
 					speed = old_speed;
 				}
+				if (
+						new_x > left_offset - rectangle_width/2 + 2 * rectangle_width/3 - player_width/2
+					&&
+						new_x < left_offset + rectangle_width/2 - player_width/2
+				)
+				{
+					if ( !bearInterval )
+					{
+						bearInterval = setInterval( function(){ moveBear( left_offset - rectangle_width/2 + rectangle_width/6, top_offset - rectangle_height/2 ); }, 1000/60 );
+					}
+
+				}
+				else if (
+						new_x > left_offset - rectangle_width/2 + player_width/2
+					&&
+						new_x < left_offset - rectangle_width/2 + rectangle_width/3 + player_width/2
+				)
+				{
+					if ( !bearInterval )
+					{
+						bearInterval = setInterval( function(){ moveBear( left_offset - rectangle_width/2 +  5 * rectangle_width/6, top_offset - rectangle_height/2 ); }, 1000/60 );
+					}
+
+				}
+				interval_level = setInterval( changeLevel, 1000 / 60 );
 			}
 			else
 			{
 				gamestate = 1;//fly
 			}
-
 
 			var width = player.get('width')/2;
 
@@ -200,5 +236,30 @@ $(document).ready(function () {
 			player.set({left: new_x, top: new_y}).setCoords();
 		}
 		canvas.renderAll();
+	}
+
+	function moveBear( x, y )
+	{
+		if ( bear )
+		{
+			var bear_x = bear.get('left');
+			var new_x;
+			var bear_y = bear.get('top');
+			var new_y;
+
+			if ( bear_y + points_per_frame > y )
+			{
+				new_y = y;
+				clearInterval( bearInterval );
+			}
+			else
+			{
+				new_y = bear_y + 6;
+			}
+
+			new_x = x;
+			bear.set({left: new_x, top: new_y}).setCoords();
+
+		}
 	}
 });
