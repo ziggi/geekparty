@@ -53,7 +53,7 @@ changingLevel = function () {
 
 		if (level_objs[i][4] <= 0 && i != maxY_ID) {
 			clearInterval(interval_level);
-			
+
 			canvas.remove(level_objs[maxY_ID][3]);
 			//delete(level_objs[maxY_ID][3]);
 			level_objs.splice(maxY_ID, 1);
