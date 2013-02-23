@@ -68,6 +68,17 @@ $(document).ready(function () {
 		);
 		canvas.add( player );
 
+		rectangle = new fabric.Rect(
+			{
+				left: canvas.getWidth()/4,
+				top: canvas.getHeight() - 40 - 10 - 80,
+				fill: 'red',
+				width: 140,
+				height: 10
+			}
+		);
+		canvas.add( rectangle );
+
 		startButton = new fabric.Text(
 			'Press screen to start',
 			{
@@ -97,6 +108,7 @@ $(document).ready(function () {
 			var new_y;
 
 //			if ( keystate[2] == true )
+			if ( gamestate == 1 ) // fly
 			{
 				if ( y < 300 )
 				{
@@ -108,10 +120,10 @@ $(document).ready(function () {
 				}
 				new_y = y - speed;
 			}
-//			else
-//			{
-//				new_y = y;
-//			}
+			else
+			{
+				new_y = y;
+			}
 
 			if ( keystate[0] == true && keystate[1] == false )
 			{
@@ -124,6 +136,29 @@ $(document).ready(function () {
 			else
 			{
 				new_x = x;
+			}
+			if (
+					new_x > rectangle.get('left') - rectangle.get('width')/2 - player.get('width')/2
+				&&
+					new_x < rectangle.get('left') + rectangle.get('width')/2 + player.get('width')/2
+				&&
+					new_y > rectangle.get('top') - rectangle.get('height')/2  - player.get('height')/2
+				&&
+					new_y < rectangle.get('top') + rectangle.get('height')/2 +  player.get('height')/2
+				&&
+					!(
+							new_x > rectangle.get('left') - rectangle.get('width')/2 + rectangle.get('width')/3 + player.get('width')/2
+						&&
+							new_x < rectangle.get('left') - rectangle.get('width')/2 + 2*rectangle.get('width')/3 + player.get('width')/2
+					)
+				)
+			{
+
+				gamestate = 2;//stand
+			}
+			else
+			{
+				gamestate = 1;//fly
 			}
 
 			var width = player.get('width')/2;
