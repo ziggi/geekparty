@@ -3,81 +3,29 @@ $(document).ready(function () {
 	var player;
 	var timeoutId;
 	var keystate = [false, false, false]; // left, right, mouse
+	var speed = 3;
+	const points_per_frame = 6;
+	var score = 0;
+	const movements = [103.75, 237.5];
+	var up_or_down = true;
 	const keyLeft = 37;
 	const keyRight = 39;
-	var jCanvas = $('canvas');
 	canvas = new fabric.Canvas('canvas');
 
-	console.log(jCanvas);
-	jCanvas.mousedown(function()
+	$(document).mousedown(function()
 	{
 		keystate[2] = true;
-//		if ( player )
-//		{
-//			var x = player.get('left');
-//			var y = player.get('top');
-//
-//			player.animate({left:x, top: y - 240 });
-//		}
 	});
-	jCanvas.mouseup( function()
+	$(document).mouseup( function()
 	{
 		keystate[2] = false;
 	});
-	//console.log( canvas );
-
-	function move( direction, first )
-	{
-		var x = player.get('left');
-		if (direction == undefined || direction == 'right') {
-			direction = x + 20;
-		}
-		else {
-			direction =  x - 20;
-		}
-		console.log( direction );
-		player.set(
-			'left',
-			x).setCoords();
-
-		player.animate(
-			'left',
-			direction,
-			{
-				duration: 1000/60
-			}).setCoords();
-	}
-
-	$('#right').mousedown(function ()
-	{
-		move('right');
-		timeoutId = setInterval( function () {
-			move('right')
-		}, 100);
-	}).bind('mouseup mouseleave', function () {
-			clearInterval( timeoutId );
-		});
-	$('#left').mousedown(function ()
-	{
-		move('left');
-		timeoutId = setInterval( function () {
-			move('left')
-		}, 100);
-	}).bind('mouseup mouseleave', function () {
-			clearInterval( timeoutId );
-		});
 
 	$(document).keydown(function (event) {
 		if (event.keyCode === 39) {//right
-			//$('#right').trigger( 'click' );
-//			move('right');
-//			timeoutId = setInterval( function () {
-//				move('right')
-//			}, 1000/60);
 			keystate[1] = true;
 		}
 		else if (event.keyCode === 37) {//left
-			//$('#left').trigger( 'click' );
 			keystate[0] = true;
 		}
 	});
@@ -125,7 +73,15 @@ $(document).ready(function () {
 
 			if ( keystate[2] == true )
 			{
-				new_y = y - 1;
+				if ( y < 200 )
+				{
+					speed +=  ( points_per_frame / movements[0] );
+				}
+				else
+				{
+					speed -= ( points_per_frame / movements[1] );
+				}
+				new_y = y - speed;
 			}
 			else
 			{
@@ -143,6 +99,11 @@ $(document).ready(function () {
 			else
 			{
 				new_x = x;
+			}
+
+			if ( y > canvas.getHeight() )
+			{
+				gameOver();
 			}
 
 
