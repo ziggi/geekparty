@@ -1,5 +1,4 @@
 
-
 var img = new Image();
 img.src = "res/panel.png";
 
@@ -45,6 +44,12 @@ img.onload = function () {
 
 changingLevel = function () {
 	if (levelMoving != 1) {
+		clearInterval(interval_level);
+
+		canvas.remove(level_objs[maxY_ID][3]);
+		delete(level_objs[maxY_ID][3]);
+		level_objs.splice(maxY_ID, 1);
+		
 		return;
 	}
 	for (var i = 0; i < level_objs.length; i++) {
@@ -55,7 +60,7 @@ changingLevel = function () {
 			clearInterval(interval_level);
 
 			canvas.remove(level_objs[maxY_ID][3]);
-			//delete(level_objs[maxY_ID][3]);
+			delete(level_objs[maxY_ID][3]);
 			level_objs.splice(maxY_ID, 1);
 
 			continue;
@@ -66,7 +71,7 @@ changingLevel = function () {
 		level_objs[i][3].set({
 			top: level_objs[i][1]
 		});
-
+		console.log(maxY_ID + ' ' + level_objs[i][1]);
 
 	}
 
@@ -91,7 +96,7 @@ changeLevel = function () {
 		}
 		level_objs[maxY_ID][4] = panel[1] + level_objs[maxY_ID][2] / 2;
 
-		console.log(maxY_ID + ' ' + level_objs.length);
+		//console.log(maxY_ID + ' ' + level_objs.length);
 
 		interval_level = setInterval( changingLevel, 1000 / 60 );
 	}

@@ -212,12 +212,10 @@ $(document).ready(function () {
 					}
 
 				}
-				interval_level = setInterval( changeLevel, 1000 / 60 );
 			}
 			else
 			{
 				gamestate = 1;//fly
-				levelMoving = 0;
 			}
 
 			var width = player.get('width')/2;
