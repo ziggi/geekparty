@@ -143,7 +143,7 @@ $(document).ready(function () {
 			var rectangle_width = rectangle.get('width');
 			var rectangle_height = rectangle.get('height');
 			var player_width = player.get('width');
-			var player_height= player.get('height');
+			var player_height = player.get('height');
 
 			if (
 					new_x > left_offset - rectangle_width/2 - player_width/2
