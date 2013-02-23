@@ -107,6 +107,7 @@ $(document).ready(function () {
 			var y = player.get('top');
 			var new_y;
 
+			var old_speed = speed;
 //			if ( keystate[2] == true )
 			if ( gamestate == 1 ) // fly
 			{
@@ -124,6 +125,7 @@ $(document).ready(function () {
 			{
 				new_y = y;
 			}
+
 
 			if ( keystate[0] == true && keystate[1] == false )
 			{
@@ -150,9 +152,9 @@ $(document).ready(function () {
 				&&
 					new_x < left_offset + rectangle_width/2 + player_width/2
 				&&
-					new_y > top_offset - rectangle_height/2  - player_height/2
+					new_y > top_offset - rectangle_height/2  - player_height/2 - old_speed
 				&&
-					new_y < top_offset + rectangle_height/2 +  player_height/2
+					new_y < top_offset + rectangle_height/2  - player_height/2 + old_speed
 				&&
 					!(
 							new_x > left_offset - rectangle_width/2 + rectangle_width/3 + player_width/2
@@ -163,11 +165,18 @@ $(document).ready(function () {
 			{
 
 				gamestate = 2;//stand
+				if ( new_y > top_offset - rectangle_height/2  - player_height/2 - old_speed
+					&&
+					new_y < top_offset + rectangle_height/2  - player_height/2 + old_speed )
+				{
+					new_y = top_offset - rectangle_height/2  - player_height/2;
+				}
 			}
 			else
 			{
 				gamestate = 1;//fly
 			}
+
 
 			var width = player.get('width')/2;
 
