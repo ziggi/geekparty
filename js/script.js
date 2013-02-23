@@ -1,7 +1,7 @@
 $(document).ready(function () {
 	var interval_1;
-
-	var canvas = new fabric.Canvas('canvas');
+	
+	canvas = new fabric.Canvas('canvas');
 
 	console.log( canvas );
 	$('#right').mousedown(function () {
