@@ -77,6 +77,18 @@ $(document).ready(function () {
 				height: 10
 			}
 		);
+		/*rectangle = new fabric.Image(img, {
+			left: canvas.getWidth()/4,
+			top: canvas.getHeight() - 40 - 10 - 80
+		});
+
+		rectangle.set({
+			hasBorders: false,
+			hasControls: false,
+			lockMovementX: true,
+			lockMovementY: true
+		});*/
+
 		canvas.add( rectangle );
 
 		startButton = new fabric.Text(
@@ -163,6 +175,7 @@ $(document).ready(function () {
 			{
 
 				gamestate = 2;//stand
+				interval_level = setInterval( changeLevel, 1000 / 60 );
 			}
 			else
 			{
